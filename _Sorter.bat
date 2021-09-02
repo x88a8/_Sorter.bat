@@ -61,7 +61,7 @@ rem set the threecodes
 rem !!! DO NOT FORGET TO CHANGE VALUE IN LOOP BELOW
 rem set threecodes="BRE","ECO","LIN","WAR","NUT","PAC","PHI","PAP","SYM"
 set n=0
-for %%a in ("BRE" "ECO" "LIN" "WAR" "NUT" "PAC" "PHI" "PAP" "SYM") do (
+for %%a in ("BRE" "ECO" "LIN" "WAR" "NUT" "PAC" "PHI" "PAP" "SYM" "TEX" "BAN" "MDR" "RAV" "SCH" "VES") do (
    set threecodes[!n!]=%%a
    set /A n+=1
 )
@@ -69,7 +69,7 @@ for %%a in ("BRE" "ECO" "LIN" "WAR" "NUT" "PAC" "PHI" "PAP" "SYM") do (
 rem set the full names in the equivalent index place
 rem set threecodes_full="Brenner", "ECOLAB", "Linde", "Warsaw Orthopedics", "NuSil Technology", "Pacplast", "Philips Medisize", "Paperdrive", "SYMMETRY MEDICAL"
 set n=0
-for %%a in ("Brenner" "ECOLAB" "Linde" "Warsaw Orthopedics" "NuSil Technology" "Pacplast" "Philips Medisize" "Paperdrive" "SYMMETRY MEDICAL") do (
+for %%a in ("Brenner" "ECOLAB" "Linde" "Warsaw Orthopedics" "NuSil Technology" "Pacplast" "Philips Medisize" "Paperdrive" "SYMMETRY MEDICAL" "Dastex" "Bantleon" "Manfred Dreher" "Rave" "Schott" "Vesta") do (
    set threecodes_full[!n!]=%%a
    set /A n+=1
 )
@@ -89,7 +89,7 @@ rem set the idents
 
 rem +++ BRENNER +++ 
 set n=0
-for %%a in (01) do (
+for %%a in (01 02) do (
    set idents_bre[!n!]=%%a
    set /A n+=1
 )
@@ -99,14 +99,15 @@ for %%a in ("Cardboard boxes for shipment") do (
    set /A n+=1
 )
 
+
 rem +++ ECOLAB +++
 set n=0
-for %%a in (01 02) do (
+for %%a in (01 02 03 04) do (
    set idents_eco[!n!]=%%a
    set /A n+=1
 )
 set n=0
-for %%a in ("P3-cosa FLUX 33" "P3-cosa CIP 72") do (
+for %%a in ("COSA FLUX 33" "COSA CIP 72" "COSA CIP 96" "COSA FOAM 40") do (
    set idents_eco_full[!n!]=%%a
    set /A n+=1
 )
@@ -166,19 +167,19 @@ for %%a in (01) do (
    set /A n+=1
 )
 set n=0
-for %%a in ("Molded PEEK Rods (Philips Plastics)") do (
+for %%a in ("Molded PEEK Rods - Philips Plastics") do (
    set idents_phi_full[!n!]=%%a
    set /A n+=1
 )
 
 rem +++ Paperdrive +++
 set n=0
-for %%a in (01 02) do (
+for %%a in (01 02 03) do (
    set idents_pap[!n!]=%%a
    set /A n+=1
 )
 set n=0
-for %%a in ("Labels for Packaging Implants (Global Packaging Solution - roll Stock)" "Labels for Packaging Implants") do (
+for %%a in ("Labels for Packaging Implants - Global Packaging Solution - roll Stock" "Labels for Packaging Implants" "Plastic Ribbon - black - for Thermotransferprinter") do (
    set idents_pap_full[!n!]=%%a
    set /A n+=1
 )
@@ -195,8 +196,113 @@ for %%a in ("Instruments") do (
    set /A n+=1
 )
 
+rem +++ Dastex +++ 
+set n=0
+for %%a in (01) do (
+   set idents_tex[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Nitrile Gloves") do (
+   set idents_tex_full[!n!]=%%a
+   set /A n+=1
+)
+
+rem +++ Bantleon +++ 
+set n=0
+for %%a in (01) do (
+   set idents_ban[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Avilub Metacool BOD") do (
+   set idents_ban_full[!n!]=%%a
+   set /A n+=1
+)
+
+rem +++ Manfred Dreher +++ 
+set n=0
+for %%a in (01) do (
+   set idents_mdr[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Specification for Chips for Trimming Device") do (
+   set idents_mdr_full[!n!]=%%a
+   set /A n+=1
+)
+rem +++ Rave +++ 
+set n=0
+for %%a in (01) do (
+   set idents_rav[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Process Temperature Control Rings") do (
+   set idents_rav_full[!n!]=%%a
+   set /A n+=1
+)
+rem +++ Schott +++ 
+set n=0
+for %%a in (01) do (
+   set idents_sch[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Screw Caps") do (
+   set idents_sch_full[!n!]=%%a
+   set /A n+=1
+)
+rem +++ Vesta +++ 
+set n=0
+for %%a in (01) do (
+   set idents_ves[!n!]=%%a
+   set /A n+=1
+)
+set n=0
+for %%a in ("Silicone Bumper") do (
+   set idents_ves_full[!n!]=%%a
+   set /A n+=1
+)
+
 
 rem search for number product
+if "%threecode%" EQU "VES" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_ves[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_ves_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
+if "%threecode%" EQU "SCH" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_sch[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_sch_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
+if "%threecode%" EQU "RAV" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_rav[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_rav_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
+if "%threecode%" EQU "MDR" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_mdr[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_mdr_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
 if "%threecode%" EQU "BRE" (
     for /L %%i in (0, 1, 0) do (
         if !idents_bre[%%i]! EQU %ident% (
@@ -206,8 +312,26 @@ if "%threecode%" EQU "BRE" (
         ) 
     )
 )
+if "%threecode%" EQU "BAN" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_ban[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_ban_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
+if "%threecode%" EQU "TEX" (
+    for /L %%i in (0, 1, 0) do (
+        if !idents_tex[%%i]! EQU %ident% (
+            rem echo !idents_bre_full[%%i]!
+            set ident_full=!idents_tex_full[%%i]!
+            goto :goOn2
+        ) 
+    )
+)
 if "%threecode%" EQU "ECO" (
-    for /L %%i in (0, 1, 1) do (
+    for /L %%i in (0, 1, 3) do (
         if !idents_eco[%%i]! EQU %ident% (
             rem echo !idents_eco_full[%%i]!
             set ident_full=!idents_eco_full[%%i]!
@@ -261,7 +385,7 @@ if "%threecode%" EQU "PHI" (
     )
 )
 if "%threecode%" EQU "PAP" (
-    for /L %%i in (0, 1, 1) do (
+    for /L %%i in (0, 1, 2) do (
         if !idents_pap[%%i]! EQU %ident% (
             rem echo !idents_pap_full[%%i]!
             set ident_full=!idents_pap_full[%%i]!
@@ -282,15 +406,19 @@ if "%threecode%" EQU "SYM" (
 SET c=Manufacturer: %threecode_full% Certificate for: %ident_full% Issued in: 20%year% 
 echo %c%
 
-set yourfoldername=%threecode_full:~1,-1% - %ident_full:~1,-1%\
+set yourfoldername=!%threecode_full:~1,-1%! - !%ident_full:~1,-1%!\
+echo %yourfoldername%
+pause
 
 rem check if folder for cert exists
 if not exist "%yourfoldername%" (
   echo.Folder %yourfoldername% doesnt exist 
   mkdir "%yourfoldername%"
   echo. Created Folder for you.
+  pause
 ) else (
   echo. Exists already. yay!
+  pause
 )
 
 rem move certificate into folder
@@ -350,7 +478,7 @@ set n=0
 for %%a in (%original_filename%) do (
    set filenames[!n!]=%%a
    echo %n% Split of %splits%...
-   copy "%original_filename%%fileextension:~1,-1%" "%%a.%year%%fileextension:~1,-1%"
+   copy "%original_filename%%fileextension:~1,-1%" "%%a-%year%%fileextension:~1,-1%"
    set /A n+=1
 )
 del "%filename:~11,-1%%fileextension:~1,-1%"
