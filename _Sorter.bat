@@ -7,7 +7,8 @@ rem Enable Splitter. (If one PDF contains multiple WE-Numbers it saves them like
 rem                                                                 "1341.15.pdf" "1234.15.pdf" "1323.15.pdf"
 rem                                                                         instead of
 rem         (0 = off / 1 = on)                                         "1341 1234 1323.15.pdf" )
-set enableSplitter=1
+if exist split-1 set enableSplitter=1
+if not exist split-1 set enableSplitter=0
 rem
 rem ###########################################################
 set path="%~1"
