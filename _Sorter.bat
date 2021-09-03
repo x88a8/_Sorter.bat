@@ -151,7 +151,7 @@ set identifier_ECO[1].ident=02
 set identifier_ECO[1].full="COSA CIP 72"
 rem ----------------------------------------------------
 set identifier_ECO[2].ident=03
-set identifier_ECO[2].full="COSA CIP 96"          
+set identifier_ECO[2].full="COSA CIP 96"    
 rem ----------------------------------------------------
 set identifier_ECO[3].ident=04
 set identifier_ECO[3].full="COSA FOAM 40"
@@ -179,7 +179,7 @@ set identifier_PAC[0].full="Shrink Film"
 rem ########### Paperdrive #############################
 set /A "counter_PAP=3"
 set identifier_PAP[0].ident=01
-set identifier_PAP[0].full="Labels for Packaging Implants - Global Packaging Solution - roll Stock"
+set identifier_PAP[0].full="Labels for Packaging Implants - Global Packaging Solution"
 rem ----------------------------------------------------
 set identifier_PAP[1].ident=02
 set identifier_PAP[1].full="Labels for Packaging Implants"
@@ -262,15 +262,12 @@ for /L %%i in (0, 1, %count_Manufacturers%) do (
    if !Manufacturer[%%i].threecode! EQU %threecode% (
        set threecode_full=!Manufacturer[%%i].full!
        set /a "index_ausgleich=%%i+1"
-       cls
        echo Found it !index_ausgleich!/15
-       pause
        goto :foundManufacturerFull
    )
    set /a "index_ausgleich=%%i+1"
    echo Checking Threecode !index_ausgleich!/15
 )
-pause
 rem #############################################################################################################################################
 
 :foundManufacturerFull
@@ -343,8 +340,8 @@ if %threecode% EQU "PAC" (
 )
 if %threecode% EQU "PAP" (
     for /L %%i in (0, 1, %counter_PAP%) do (
-        if !identifier_PAC[%%i].ident! EQU %ident% (
-            set ident_full=!identifier_PAC[%%i].full!
+        if !identifier_PAP[%%i].ident! EQU %ident% (
+            set ident_full=!identifier_PAP[%%i].full!
             goto :foundProductFull
         ) 
     )
@@ -408,25 +405,21 @@ if %threecode% EQU "WAR" (
 rem #############################################################################################################################################
 
 :foundProductFull
-cls
 SET quick_summary=Manufacturer: %threecode_full% Certificate for: %ident_full% Issued in: 20%year% 
 echo %quick_summary%
 echo ------------------------------------------------------------------------------
 echo Folder:
 set yourfoldername=%threecode_full:~1,-1% - %ident_full:~1,-1%\
 echo %yourfoldername%
-pause
 
 rem check if folder for cert exists
 if not exist "%yourfoldername%" (
   echo.Folder %yourfoldername% doesnt exist 
   mkdir "%yourfoldername%"
   echo. Created Folder for you.
-  cls
   goto :folder_created
 ) else (
   echo. Exists already. yay!
-  cls
 )
 rem This is only there to fix a bug where it displays Created folder for you and then Exsists already again.
 :folder_created
@@ -457,8 +450,7 @@ rem ############################################################################
 
 rem check if new filename is longer than 4. else start splitting
 set temp=%filename:~11,-1%
-ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del x
-echo %strlength% && pause
+ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del
 if %strlength% LEQ 4 (
     echo. No splits needed. Ending
     ren "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%" "%filename:~11,-1%-%year%%fileextension:~1,-1%"
@@ -476,11 +468,10 @@ if %modulo% NEQ 0 (
     goto :end
 )
 echo. Filename is suitable for Splitting!
-pause
+
 rem Calculate how many splits are needed
 echo Calculating splits needed...
 set /a "splits=%y%/5"
-cls
 if %splits% EQU 1 (
     echo One split is needed.
 )
@@ -489,7 +480,7 @@ if %splits% GTR 1 (
 )
 
 rem split into seperate WE Files.
-cls && echo Splitting...
+echo Splitting...
 cd "%yourfoldername%"
 
 set original_filename=%filename:~11,-1%
