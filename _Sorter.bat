@@ -461,7 +461,7 @@ ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del x
 echo %strlength% && pause
 if %strlength% LEQ 4 (
     echo. No splits needed. Ending
-    %SystemRoot%\System32\timeout.exe /t 3
+    ren "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%" "%filename:~11,-1%-%year%%fileextension:~1,-1%"
     goto :end
 )
 
@@ -496,7 +496,7 @@ set original_filename=%filename:~11,-1%
 
 set n=0
 for %%a in (%original_filename%) do (
-   echo %%n%% Split of %splits%...
+   echo !n! Split of %splits%...
    copy "%original_filename%%fileextension:~1,-1%" "%%a-%year%%fileextension:~1,-1%"
    set original_filename=%original_filename:~5,-5%
    set /A n+=1
