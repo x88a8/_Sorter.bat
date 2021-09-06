@@ -50,7 +50,15 @@ if %strlength% LEQ 15 (
     pause
     Exit
 )
-
+rem echo [47m[30m"            _____            _                  _           _   "[0m[0m;
+rem echo [47m[30m"           / ____|          | |                | |         | |  "[0m[0m;
+rem echo [47m[30m"          | (___   ___  _ __| |_ ___ _ __      | |__   __ _| |_ "[0m[0m;
+rem echo [47m[30m"           \___ \ / _ \| '__| __/ _ \ '__|     | '_ \ / _\` | __|"[0m[0m;
+rem echo [47m[30m"           ____) | (_) | |  | ||  __/ |     _  | |_) | (_| | |_ "[0m[0m;
+rem echo [47m[30m"          |_____/ \___/|_|   \__\___|_|    (_) |_.__/ \__,_|\__|"[0m[0m;
+rem echo [47m[30m"  ______                                                        "[0m[0m;
+rem echo [47m[30m" |______|                                                       "[0m[0m;
+rem echo 
 
 rem                         "Database"
 rem #############################################################################################################################################
@@ -63,9 +71,12 @@ rem    |_|  |_|  |_|_|  \_\______|______\_____\____/|_____/|______|_____/
 rem #############################################################################################################################################                                                               
 
 rem count of different manufacturers
-set /A "count_Manufacturers=15"
+set /A "count_Manufacturers=17"
 
 rem correlating threecodes with their written out counterparts
+rem ----------------------------------------------------
+set Manufacturer[16].threecode="AMT"
+set Manufacturer[16].full="AMTS"
 rem ----------------------------------------------------
 set Manufacturer[0].threecode="BAN"
 set Manufacturer[0].full="Bantleon"
@@ -75,6 +86,9 @@ set Manufacturer[1].full="Brenner"
 rem ----------------------------------------------------
 set Manufacturer[2].threecode="ECO"
 set Manufacturer[2].full="ECOLAB"
+rem ----------------------------------------------------
+set Manufacturer[15].threecode="GRA"
+set Manufacturer[15].full="Gramss"
 rem ----------------------------------------------------
 set Manufacturer[3].threecode="LIN"
 set Manufacturer[3].full="Linde"
@@ -132,6 +146,11 @@ rem
 rem
 rem #############################################################################################################################################
 
+rem ########### AMTS ############################### 
+set /A "counter_AMT=1"
+set identifier_AMT[0].ident=01
+set identifier_AMT[0].full="Firing support"
+
 rem ########### Bantleon ############################### 
 set /A "counter_BAN=1"
 set identifier_BAN[0].ident=01
@@ -151,10 +170,15 @@ set identifier_ECO[1].ident=02
 set identifier_ECO[1].full="COSA CIP 72"
 rem ----------------------------------------------------
 set identifier_ECO[2].ident=03
-set identifier_ECO[2].full="COSA CIP 96"    
+set identifier_ECO[2].full="COSA CIP 96"
 rem ----------------------------------------------------
 set identifier_ECO[3].ident=04
 set identifier_ECO[3].full="COSA FOAM 40"
+
+rem ########### Gramß ##################################
+set /A "counter_GRA=1"
+set identifier_GRA[0].ident=01
+set identifier_GRA[0].full="Glass vial scew cap with sealing gasket"
 
 rem ########### Linde ##################################
 set /A "counter_LIN=1"
@@ -229,9 +253,11 @@ set identifier_WAR[1].ident=02
 set identifier_WAR[1].full="Custom Growth Rod"
 
 rem ########### counter adjustment ######################
-set /A "counter_BAN=%counter_BRE%-1"
+set /A "counter_AMT=%counter_AMT%-1"
+set /A "counter_BAN=%counter_BAN%-1"
 set /A "counter_BRE=%counter_BRE%-1"
 set /A "counter_ECO=%counter_ECO%-1"
+set /A "counter_GRA=%counter_GRA%-1"
 set /A "counter_LIN=%counter_LIN%-1"
 set /A "counter_MDR=%counter_MDR%-1"
 set /A "counter_NUT=%counter_NUT%-1"
@@ -257,16 +283,15 @@ rem |_|  |_/_/    \_\_| \_|\____/|_|/_/    \_\_____|  |_|   \____/|_|  \_\______
 rem #############################################################################################################################################
 
 rem Search for Full Equivalent of the threecode
-
+echo Checking DB for Threecode...
 for /L %%i in (0, 1, %count_Manufacturers%) do (
    if !Manufacturer[%%i].threecode! EQU %threecode% (
        set threecode_full=!Manufacturer[%%i].full!
        set /a "index_ausgleich=%%i+1"
-       echo Found it !index_ausgleich!/15
+       echo Found Threecode in DB: [92m!index_ausgleich!/!count_Manufacturers![0m 
        goto :foundManufacturerFull
    )
    set /a "index_ausgleich=%%i+1"
-   echo Checking Threecode !index_ausgleich!/15
 )
 rem #############################################################################################################################################
 
@@ -282,10 +307,24 @@ rem |_____|_____/|______|_| \_|  |_|    |_____/|______/_/    \_\_|  \_\\_____|_|
 rem #############################################################################################################################################
 
 rem search for number product
+if %threecode% EQU "AMT" (
+    for /L %%i in (0, 1, %counter_AMT%) do (
+        if !identifier_AMT[%%i].ident! EQU %ident% (
+            set ident_full=!identifier_AMT[%%i].full!
+            set /a "counter_WAR=%counter_AMT%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_AMT![0m 
+            set /a "counter_WAR=%counter_AMT%-1"
+            goto :foundProductFull
+        ) 
+    )
+)
 if %threecode% EQU "BAN" (
     for /L %%i in (0, 1, %counter_BAN%) do (
         if !identifier_BAN[%%i].ident! EQU %ident% (
             set ident_full=!identifier_BAN[%%i].full!
+            set /a "counter_WAR=%counter_BAN%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_BAN![0m 
+            set /a "counter_WAR=%counter_BAN%-1"
             goto :foundProductFull
         ) 
     )
@@ -294,6 +333,9 @@ if %threecode% EQU "BRE" (
     for /L %%i in (0, 1, %counter_BRE%) do (
         if !identifier_BRE[%%i].ident! EQU %ident% (
             set ident_full=!identifier_BRE[%%i].full!
+            set /a "counter_WAR=%counter_BRE%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_BRE![0m 
+            set /a "counter_WAR=%counter_BRE%-1"
             goto :foundProductFull
         ) 
     )
@@ -302,6 +344,20 @@ if %threecode% EQU "ECO" (
     for /L %%i in (0, 1, %counter_ECO%) do (
         if !identifier_ECO[%%i].ident! EQU %ident% (
             set ident_full=!identifier_ECO[%%i].full!
+            set /a "counter_WAR=%counter_ECO%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_ECO![0m 
+            set /a "counter_WAR=%counter_ECO%-1"
+            goto :foundProductFull
+        ) 
+    )
+)
+if %threecode% EQU "GRA" (
+    for /L %%i in (0, 1, %counter_GRA%) do (
+        if !identifier_GRA[%%i].ident! EQU %ident% (
+            set ident_full=!identifier_GRA[%%i].full!
+            set /a "counter_WAR=%counter_GRA%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_GRA![0m 
+            set /a "counter_WAR=%counter_GRA%-1"
             goto :foundProductFull
         ) 
     )
@@ -310,6 +366,9 @@ if %threecode% EQU "LIN" (
     for /L %%i in (0, 1, %counter_LIN%) do (
         if !identifier_LIN[%%i].ident! EQU %ident% (
             set ident_full=!identifier_LIN[%%i].full!
+            set /a "counter_WAR=%counter_LIN%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_LIN![0m 
+            set /a "counter_WAR=%counter_LIN%-1"
             goto :foundProductFull
         ) 
     )
@@ -318,6 +377,9 @@ if %threecode% EQU "MDR" (
     for /L %%i in (0, 1, %counter_MDR%) do (
         if !identifier_MDR[%%i].ident! EQU %ident% (
             set ident_full=!identifier_MDR[%%i].full!
+            set /a "counter_WAR=%counter_MDR%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_MDR![0m 
+            set /a "counter_WAR=%counter_MDR%-1"
             goto :foundProductFull
         ) 
     )
@@ -326,6 +388,9 @@ if %threecode% EQU "NUT" (
     for /L %%i in (0, 1, %counter_NUT%) do (
         if !identifier_NUT[%%i].ident! EQU %ident% (
             set ident_full=!identifier_NUT[%%i].full!
+            set /a "counter_WAR=%counter_NUT%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_NUT![0m 
+            set /a "counter_WAR=%counter_NUT%-1"
             goto :foundProductFull
         ) 
     )
@@ -334,6 +399,9 @@ if %threecode% EQU "PAC" (
     for /L %%i in (0, 1, %counter_PAC%) do (
         if !identifier_PAC[%%i].ident! EQU %ident% (
             set ident_full=!identifier_PAC[%%i].full!
+            set /a "counter_WAR=%counter_PAC%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_PAC![0m 
+            set /a "counter_WAR=%counter_PAC%-1"
             goto :foundProductFull
         ) 
     )
@@ -342,6 +410,9 @@ if %threecode% EQU "PAP" (
     for /L %%i in (0, 1, %counter_PAP%) do (
         if !identifier_PAP[%%i].ident! EQU %ident% (
             set ident_full=!identifier_PAP[%%i].full!
+            set /a "counter_WAR=%counter_PAP%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_PAP![0m 
+            set /a "counter_WAR=%counter_PAP%-1"
             goto :foundProductFull
         ) 
     )
@@ -350,6 +421,9 @@ if %threecode% EQU "PHI" (
     for /L %%i in (0, 1, %counter_PHI%) do (
         if !identifier_PHI[%%i].ident! EQU %ident% (
             set ident_full=!identifier_PHI[%%i].full!
+            set /a "counter_WAR=%counter_PHI%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_PHI![0m 
+            set /a "counter_WAR=%counter_PHI%-1"
             goto :foundProductFull
         ) 
     )
@@ -358,6 +432,9 @@ if %threecode% EQU "RAV" (
     for /L %%i in (0, 1, %counter_RAV%) do (
         if !identifier_RAV[%%i].ident! EQU %ident% (
             set ident_full=!identifier_RAV[%%i].full!
+            set /a "counter_WAR=%counter_RAV%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_RAV![0m 
+            set /a "counter_WAR=%counter_RAV%-1"
             goto :foundProductFull
         ) 
     )
@@ -366,6 +443,9 @@ if %threecode% EQU "SCH" (
     for /L %%i in (0, 1, %counter_SCH%) do (
         if !identifier_SCH[%%i].ident! EQU %ident% (
             set ident_full=!identifier_SCH[%%i].full!
+            set /a "counter_WAR=%counter_SCH%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_SCH![0m 
+            set /a "counter_WAR=%counter_SCH%-1"
             goto :foundProductFull
         ) 
     )
@@ -374,6 +454,9 @@ if %threecode% EQU "SYM" (
     for /L %%i in (0, 1, %counter_SYM%) do (
         if !identifier_SYM[%%i].ident! EQU %ident% (
             set ident_full=!identifier_SYM[%%i].full!
+            set /a "counter_WAR=%counter_SYM%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_SYM![0m 
+            set /a "counter_WAR=%counter_SYM%-1"
             goto :foundProductFull
         ) 
     )
@@ -382,6 +465,9 @@ if %threecode% EQU "TEX" (
     for /L %%i in (0, 1, %counter_TEX%) do (
         if !identifier_TEX[%%i].ident! EQU %ident% (
             set ident_full=!identifier_TEX[%%i].full!
+            set /a "counter_WAR=%counter_TEX%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_TEX![0m  
+            set /a "counter_WAR=%counter_TEX%-1"
             goto :foundProductFull
         ) 
     )
@@ -390,6 +476,9 @@ if %threecode% EQU "VES" (
     for /L %%i in (0, 1, %counter_VES%) do (
         if !identifier_VES[%%i].ident! EQU %ident% (
             set ident_full=!identifier_VES[%%i].full!
+            set /a "counter_WAR=%counter_VES%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_VES![0m  
+            set /a "counter_WAR=%counter_VES%-1"
             goto :foundProductFull
         ) 
     )
@@ -398,37 +487,36 @@ if %threecode% EQU "WAR" (
     for /L %%i in (0, 1, %counter_WAR%) do (
         if !identifier_WAR[%%i].ident! EQU %ident% (
             set ident_full=!identifier_WAR[%%i].full!
+            set /a "counter_WAR=%counter_WAR%+1"
+            echo Found Identifier in DB: [92m%%i/!counter_WAR![0m 
+            set /a "counter_WAR=%counter_WAR%-1"
             goto :foundProductFull
         ) 
     )
 )
 rem #############################################################################################################################################
-
 :foundProductFull
-SET quick_summary=Manufacturer: %threecode_full% Certificate for: %ident_full% Issued in: 20%year% 
-echo %quick_summary%
-echo ------------------------------------------------------------------------------
-echo Folder:
+echo ---------------------------------------------------------
+echo [96m[I][0m Manufacturer:[96m %threecode_full%[0m 
+echo [96m[I][0m Certificate for:[96m %ident_full%[0m 
+echo [96m[I][0m Issued in:[96m 20%year%[0m 
+echo ---------------------------------------------------------
+
 set yourfoldername=%threecode_full:~1,-1% - %ident_full:~1,-1%\
-echo %yourfoldername%
 
 rem check if folder for cert exists
 if not exist "%yourfoldername%" (
-  echo.Folder %yourfoldername% doesnt exist 
+  echo [91m[ERR][0m Folder %yourfoldername% doesnt exist
   mkdir "%yourfoldername%"
-  echo. Created Folder for you.
-  goto :folder_created
+  echo [92m[OK][0m Created Folder for you.
 ) else (
-  echo. Exists already. yay!
+  echo [92m[OK][0m Exists already. Perfect!
 )
+
 rem This is only there to fix a bug where it displays Created folder for you and then Exsists already again.
-:folder_created
 
 rem move certificate into folder
-echo %filename:~11,-1%%fileextension:~1,-1% 
-echo %yourfoldername%
-move "%filename:~1,-1%%fileextension:~1,-1%" "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%"
-
+move "%filename:~1,-1%%fileextension:~1,-1%" "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%" > nul
 
 if %enableSplitter% EQU 1 (
     goto :splitter
@@ -450,48 +538,47 @@ rem ############################################################################
 
 rem check if new filename is longer than 4. else start splitting
 set temp=%filename:~11,-1%
-ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del
+ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del x
 if %strlength% LEQ 4 (
-    echo. No splits needed. Ending
-    ren "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%" "%filename:~11,-1%-%year%%fileextension:~1,-1%"
+    echo [96m[I][0m No splits needed. Ending
+    ren "%yourfoldername%%filename:~11,-1%%fileextension:~1,-1%" "%filename:~11,-1%-%year%%fileextension:~1,-1%" > nul
     goto :end
 )
-
 rem check if filename is suited for splitting
 set temp=%filename:~11,-1%
 ECHO %temp%>x&FOR %%? IN (x) DO SET /a strlength=%%~z? - 2&del x
-set /a "y=%strlength%-4"
-set /a "modulo=%y% %% 5"
+set /a "y=%strlength%-4" > nul
+set /a "modulo=%y% %% 5" > nul
 if %modulo% NEQ 0 (
-    echo. Please make sure there are no extra spaces at the end of the file!
+    echo [91m[I][0mPlease make sure there are no extra spaces at the end of the file!
     pause
     goto :end
 )
-echo. Filename is suitable for Splitting!
+echo [96m[I][0m Filename is suitable for Splitting!
 
 rem Calculate how many splits are needed
-echo Calculating splits needed...
+echo [96m[I][0m Calculating splits needed...
 set /a "splits=%y%/5"
 if %splits% EQU 1 (
-    echo One split is needed.
+    echo [96m[I][0m One split is needed.
 )
 if %splits% GTR 1 (
-    echo %splits% Splits are needed.
+    echo [96m[I][0m %splits% Splits are needed.
 )
 
 rem split into seperate WE Files.
-echo Splitting...
+echo [96m[I][0m Splitting...
 cd "%yourfoldername%"
 
 set original_filename=%filename:~11,-1%
 
 set n=0
 for %%a in (%original_filename%) do (
-   echo !n! Split of %splits%...
-   copy "%original_filename%%fileextension:~1,-1%" "%%a-%year%%fileextension:~1,-1%"
+   echo [96m[I] !n! Split of %splits%...
+   copy "%original_filename%%fileextension:~1,-1%" "%%a-%year%%fileextension:~1,-1%" > nul
    set original_filename=%original_filename:~5,-5%
    set /A n+=1
-   %SystemRoot%\System32\timeout.exe /t 1
+   %SystemRoot%\System32\timeout.exe /t 1 > nul
 )
 del "%filename:~11,-1%%fileextension:~1,-1%"
 rem #############################################################################################################################################
@@ -503,7 +590,7 @@ rem  _  | |____| |\  | |__| |
 rem (_) |______|_| \_|_____/ 
 :end
 rem #############################################################################################################################################
-
-%SystemRoot%\System32\timeout.exe /t 3
+echo [96m[I][0m Erfolgreich abgeschlossen! Dieses Fenster schließt sich automatisch nach 3 Sekunden.
+%SystemRoot%\System32\timeout.exe /t 3 > nul
+pause >nul
 exit
-
